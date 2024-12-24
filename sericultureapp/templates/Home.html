@@ -1,0 +1,435 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/HomeCss.css' %}" />
+
+    <link rel="stylesheet" href="HomeCss.css" />
+
+    <title>Sericulture Rwanda</title>
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-light bg-dark shadow-sm sticky-top"
+    >
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'Home' %}" style="color: #28a745"
+          >Sericulture Rwanda</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-center"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'Home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'about us' %}">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'services' %}">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'contact_us' %}">Contact</a>
+            </li>
+          </ul>
+        </div>
+        <a href="{% url 'login' %}" target="_blank"
+          ><button class="btn btn-outline-success ms-3" id="loginButton">
+            Login
+          </button></a
+        >
+
+        <form class="d-flex ms-3" role="search">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-secondary" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </div>
+    </nav>
+    <section class="hero-section position-relative d-flex align-items-center">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <img
+              src="{% static 'images/5.jpg'%}"
+              alt="Silk Farming"
+              class="img-fluid rounded shadow-lg"
+            />
+          </div>
+
+          <div class="col-md-6 text-md-start text-center">
+            <h1 class="fw-bold display-4 mb-3">
+              Sericulture <br /><span class="fw-light">Silk farming</span>
+            </h1>
+            <p class="mb-4">
+              Empowering farmers with tools to manage silkworm farming, silk
+              production, and learn best practices.
+            </p>
+            <a
+              href="{% url 'register' %}"
+              target="_blank"
+              class="btn btn-success rounded-pill px-4 py-2"
+              style="background-color: #28a745"
+              >Join now</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+    <br />
+
+    <!-- about -->
+    <section class="about-section py-5">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-md-start text-center">
+            <h2 class="fw-bold mb-3">Sericulture</h2>
+            <p class="mb-4">
+              Sericulture, is the practice of rearing silkworms for silk
+              production. This process supports sustainable farming and creates
+              high-value silk products.
+            </p>
+            <p>
+              With advancements in technology, sericulture has become more
+              efficient, allowing farmers to monitor silkworm health, optimize
+              feeding schedules, and increase production yields, which has led
+              to greater profitability.
+            </p>
+            <p>
+              Sericulture Rwanda is set to transform Rwanda's silk industry by
+              equipping farmers with the knowledge and tools needed to enhance
+              productivity. By integrating modern technologies like IoT for farm
+              monitoring and offering comprehensive e-learning resources, the
+              platform will empower farmers to adopt best practices, improve
+              silkworm health, and achieve higher yields.
+            </p>
+            <a
+              href="{% url 'register' %}"
+              class="btn btn-success rounded-pill px-4 py-2"
+              style="background-color: #28a745"
+              >Register here!</a
+            >
+          </div>
+
+          <div class="col-md-6 text-center">
+            <video
+              controls
+              class="img-fluid rounded"
+              width="800"
+              autoplay
+              muted
+              loop
+              src="{% static 'images/video1.mp4'%}"
+              type="video/mp4"
+            ></video>
+            <br />
+            <br />
+            <img
+              src="{% static 'images/6.jpg'%}"
+              alt="Silk Farming"
+              class="img-fluid rounded shadow-lg"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- services -->
+    <section class="services-section py-5 bg-light">
+      <div class="container text-center">
+        <h2 class="mb-4">Our services</h2>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card p-4 shadow">
+              <h5 style="color: #28a745">Farm management</h5>
+              <p>Track farming operations and manage resources efficiently.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card p-4 shadow">
+              <h5 style="color: #28a745">Productivity analytics</h5>
+              <p>Analyze trends to optimize your productivity.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card p-4 shadow">
+              <h5 style="color: #28a745">E-Learning</h5>
+              <p>Access tutorials and guides on sericulture.</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card p-4 shadow">
+              <h5 style="color: #28a745">Market opportunities</h5>
+              <p>Connect with global markets to sell your silk products.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- testimonials -->
+    <section class="testimonials-section py-5 bg-light">
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="testimonials-section">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <p class="testimonials-title">Testimonials</p>
+                  <p class="testimonials-content">
+                    "I wanted to diversify my farm, and sericulture was a
+                    perfect choice. The farm management tools on this platform
+                    are excellent—they help me monitor each stage of production.
+                    It's like having a virtual assistant for my silkworms!"
+                  </p>
+                  <button class="btn view-all-btn">
+                    View all testimonials
+                  </button>
+                </div>
+                <div class="nav-buttons">
+                  <div class="nav-arrow">&uarr;</div>
+                  <div class="nav-arrow">&darr;</div>
+                </div>
+              </div>
+              <div class="mt-4 p-3 bg-white rounded shadow-sm">
+                <p>
+                  "Starting a silkworm farm seemed challenging at first, but
+                  this platform made it easy. The step-by-step courses and
+                  support have given me confidence, and I'm already seeing
+                  positive results in my first batch of silkworms!"
+                </p>
+                <p class="testimonials-name">Gad Irumva</p>
+                <span class="rating">★★★★★</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- news -->
+
+    <section class="news-section py-5;">
+      <div class="container">
+        <h2 class="text-center mb-4">News & Articles</h2>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card shadow">
+              <img
+                src="{% static 'images/istockphoto-1501588808-612x612.jpg'%}"
+                class="card-img-top"
+                alt="News 1"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Starting your journey</h5>
+                <p class="card-text">
+                  Starting your sericulture journey in Rwanda.
+                </p>
+                <a
+                  href="#"
+                  class="btn btn-success"
+                  style="background-color: #28a745"
+                  >Read more</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow">
+              <img
+                src="{% static 'images/istockphoto-1919863292-612x612.jpg'%}"
+                class="card-img-top"
+                alt="News 2"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Research & Challenges</h5>
+                <p class="card-text">
+                  Rwanda's growing silk industry: opportunities and challenges.
+                </p>
+                <a
+                  href="#"
+                  class="btn btn-success"
+                  style="background-color: #28a745"
+                  >Read more</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow">
+              <img
+                src="{% static 'images/istockphoto-1014903134-612x612.jpg'%}"
+                class="card-img-top"
+                alt="News 3"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Industry collaboration</h5>
+                <p class="card-text">
+                  Explore how the silk industry fosters collaboration.
+                </p>
+                <a
+                  href="#"
+                  class="btn btn-success"
+                  style="background-color: #28a745"
+                  >Read more</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <br />
+    <br />
+    <!--footer-->
+    <footer class="footer bg-dark text-light py-5">
+      <div class="container">
+        <div class="row">
+          <!-- about -->
+          <div class="col-md-3">
+            <h5 style="color: #28a745">SERICULTURE RWANDA</h5>
+            <p>
+              We are dedicated to promoting sericulture in Rwanda and connecting
+              farmers.
+            </p>
+            <div class="social-icons mt-3">
+              <a href="" class="text-light me-3"
+                ><i class="bi bi-facebook"></i
+              ></a>
+              <a href="" class="text-light me-3"
+                ><i class="bi bi-twitter"></i
+              ></a>
+              <a href="" class="text-light me-3"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a href="" class="text-light"><i class="bi bi-youtube"></i></a>
+            </div>
+          </div>
+
+          <!-- links -->
+          <div class="col-md-2">
+            <h5 style="color: #28a745">EXPLORE</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="" class="text-light text-decoration-none">About</a>
+              </li>
+              <li>
+                <a href="" class="text-light text-decoration-none">Services</a>
+              </li>
+              <li>
+                <a href="" class="text-light text-decoration-none"
+                  >Our projects</a
+                >
+              </li>
+              <li>
+                <a href="" class="text-light text-decoration-none"
+                  >Meet the farmers</a
+                >
+              </li>
+              <li>
+                <a href="" class="text-light text-decoration-none"
+                  >Latest news</a
+                >
+              </li>
+              <li>
+                <a href="" class="text-light text-decoration-none">Contact</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- news -->
+          <div class="col-md-4">
+            <h5 style="color: #28a745">News</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <a href="" class="text-light text-decoration-none">
+                  <i class="bi bi-globe"></i
+                  ><strong
+                    >"How sericulture can transform rural communities in
+                    Rwanda"</strong
+                  ><br />
+                  <small>July 3, 2024</small>
+                </a>
+              </li>
+              <li>
+                <a href="" class="text-light text-decoration-none">
+                  <i class="bi bi-key"></i>
+                  <strong
+                    >"The economic impact of sericulture on Rwanda’s
+                    economy"</strong
+                  ><br />
+                  <small>July 5, 2024</small>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- contact -->
+          <div class="col-md-3" id="contact">
+            <h5 style="color: #28a745">Contact</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="bi bi-telephone-fill me-2"></i>+250-780-605-880
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-envelope-fill me-2"></i>info@sericulture.com
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-geo-alt-fill me-2"></i>Kigali, Rwanda, Kg 21 Av
+              </li>
+            </ul>
+            <form class="d-flex">
+              <input
+                type="text"
+                class="form-control me-2"
+                placeholder="Enter your message"
+              />
+              <button class="btn btn-success" type="submit">
+                <i class="bi bi-send"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <hr class="bg-light my-4" />
+
+        <div class="row">
+          <div class="col text-center">
+            <p style="color: #28a745">
+              &copy; 2024 Copyright | Terms of use | Privacy policy
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <link rel="stylesheet" href="{% static 'js/bootstrap.bundle.js' %}" />
+  </body>
+</html>

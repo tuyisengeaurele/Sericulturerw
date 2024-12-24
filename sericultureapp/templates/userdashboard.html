@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User dashboard | Sericulture Rwanda</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <style>
+      .dropdown-item:hover {
+        background-color:#0d6efd; /* A green background */
+        color: white; /* White text */
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <div class="d-flex">
+      <nav class="bg-dark text-light flex-shrink-0 p-3 sticky-top" style="width: 250px; height: 100vh">
+        <h4 class="text-center text-success">Sericulture Rwanda</h4>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="{% url 'userdashboard' %}" class="nav-link text-light active">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'userprofile' %}" class="nav-link text-light">
+              <i class="bi bi-person"></i> User profile
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a 
+              href="{% url 'my_farms' %}" 
+              class="nav-link dropdown-toggle text-light" 
+              id="farmsDropdown" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false"
+            >
+              <i class="bi bi-house-door"></i> My farms
+            </a>
+            <ul 
+              class="dropdown-menu bg-dark border-0 shadow position-static mt-2" 
+              aria-labelledby="farmsDropdown"
+            >
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'farm_conditions' %}">
+                  <i class="bi bi-thermometer-sun"></i> Farm conditions
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'silkworm_batches' %}">
+                  <i class="bi bi-bug"></i> Silkworm batches
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'track_growth' %}">
+                  <i class="bi bi-graph-up"></i> Growth tracking
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'production' %}">
+                  <i class="bi bi-box-seam"></i> Production
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'pest_and_diseases' %}">
+                  <i class="bi bi-bug"></i> Pests and diseases
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'feeding_schedule' %}">
+                  <i class="bi bi-calendar-check"></i> Feeding schedules
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'device_deployed' %}">
+                  <i class="bi bi-cpu"></i> Devices deployed
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'add_staff' %}">
+                  <i class="bi bi-person-lines-fill"></i> Personnel
+                </a>
+              </li>
+            </ul>
+          </li> 
+          <li>
+            <a href="{% url 'manage_staff' %}" class="nav-link text-light">
+              <i class="bi bi-person-check"></i> Manage staff
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'my_courses' %}" class="nav-link text-light">
+              <i class="bi bi-book"></i> My courses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'user_notifications' %}" class="nav-link text-light">
+              <i class="bi bi-bell"></i> Notifications
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'community_chatroom' %}" class="nav-link text-light">
+              <i class="bi bi-chat-dots"></i> Community
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'reports' %}" class="nav-link text-light">
+              <i class="bi bi-file-earmark-pdf"></i> Reports
+            </a>
+          </li>
+        </ul>
+        <hr />
+        <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger w-100">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
+      </nav>
+      <!-- Main Content -->
+      <div class="flex-grow-1 p-4">
+        <h2 class="text-success">Welcome, {{ user.username }}!</h2>
+        <div class="row">
+          <!-- Cards -->
+          <div class="col-md-3">
+            <div class="card bg-success text-light text-center p-3">
+              <i class="bi bi-house-door fs-1"></i>
+              <h5>{{ my_farm_count }} Farm(s)</h5>
+              <p>View and manage your farms</p>
+              <a href="{% url 'my_farms' %}" class="btn btn-light">
+                View
+              </a>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-info text-light text-center p-3">
+              <i class="bi bi-book fs-1"></i>
+              <h5>{{ my_course_count }} Courses</h5>
+              <p>Access learning content</p>
+              <a href="{% url 'my_courses' %}" class="btn btn-light">
+                View
+              </a>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-warning text-dark text-center p-3">
+              <i class="bi bi-bell fs-1"></i>
+              <h5>{{ notification_count }} Notifications</h5>
+              <p>Stay updated</p>
+              <a href="{% url 'user_notifications' %}" class="btn btn-dark">
+                View
+              </a>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-danger text-light text-center p-3">
+              <i class="bi bi-chat-dots fs-1"></i>
+              <h5>Community</h5>
+              <p>Join Sericulture Rwanda community</p>
+              <a href="{% url 'community_chatroom' %}" class="btn btn-light">
+                View
+              </a>
+            </div>
+          </div>
+        </div>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin dashboard | Manage farms</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+
+    <style>
+      .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+      }
+
+      .card-body {
+        flex: 1;
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: flex-end;
+      }
+      #farmGraph {
+        width: 100%;
+        height: 250px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="d-flex">
+      <nav
+        class="bg-dark text-light flex-shrink-0 p-3 sticky-top"
+        style="width: 250px; height: 100vh"
+      >
+        <h4 class="text-center text-success">Sericulture Rwanda</h4>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a
+              href="{% url 'admindashboard' %}"
+              class="nav-link text-light "
+            >
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'user_management' %}" class="nav-link text-light">
+              <i class="bi bi-people"></i> Manage users
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'farm_management' %}" class="nav-link text-light active">
+              <i class="bi bi-house-door"></i> Manage farms
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'content_management' %}"
+              class="nav-link text-light"
+            >
+              <i class="bi bi-book"></i> Courses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'feedback' %}" class="nav-link text-light">
+              <i class="bi bi-chat-dots"></i> Feedback
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_notifications' %}" class="nav-link text-light">
+              <i class="bi bi-bell"></i> Notifications
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'analytics' %}" class="nav-link text-light">
+              <i class="bi bi-graph-up"></i> Analytics
+            </a>
+          </li>
+        </ul>
+        <hr />
+        <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger w-100">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
+      </nav>
+
+      <!-- Main content -->
+      <div class="main-content flex-grow-1 p-4">
+        {% for farm in dfarm %}
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="text-success">{{ farm.name }}</h2>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFarmModal">
+              <i class="bi bi-trash"></i> Delete farm
+            </button>
+          </div>
+
+          <div class="container mt-5">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">Farm details</h5>
+                    <p><strong>Location:</strong> {{ farm.location }}</p>
+                    <p><strong>Owner:</strong> {{ farm.owner.username }}</p>
+                    <p><strong>Size:</strong> {{ farm.size }} acres</p>
+                    <p><strong>Description:</strong></p>
+                    <p>
+                      {% if farm.description %}
+                        {{ farm.description }}
+                      {% else %}
+                        <span class="text-muted">No description provided</span>
+                      {% endif %}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">Silkworm batches</h5>
+                    {% for batch in farm.silkworm_batches.all %}
+                      <div class="card-body">
+                        <h5>{{ batch.batch_name }} ({{ batch.breed }})</h5>
+                        <p><strong>Quantity:</strong> {{ batch.quantity }}</p>
+                        <p><strong>Start date:</strong> {{ batch.start_date }}</p>
+                        <p><strong>End date:</strong> {{ batch.end_date|default:"N/A" }}</p>
+                      </div>
+                    {% empty %}
+                      <p>No silkworm batches available.</p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">Production overview</h5>
+                    {% for batch in farm.silkworm_batches.all %}
+                      <ol>
+                        {% for production in batch.productions.all %}
+                          <li>
+                            <strong>Date:</strong> {{ production.production_date }}<br />
+                            <strong>Quantity:</strong> {{ production.quantity }} kg<br />
+                            <strong>Grade:</strong> {{ production.quality_grade }}<br />
+                          </li>
+                        {% empty %}
+                          <li>No production recorded for this batch.</li>
+                        {% endfor %}
+                      </ol>
+                    {% empty %}
+                      <p>No production details available.</p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>           
+
+              <div class="col-md-4">
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">Farm conditions</h5>
+                    {% if farm.weathermonitoring_set.exists %}
+                      <p><strong>Temperature:</strong> {{ farm.weathermonitoring_set.first.temperature }}°C</p>
+                      <p><strong>Humidity:</strong> {{ farm.weathermonitoring_set.first.humidity }}%</p>
+                      <p><strong>Last updated:</strong> {{ farm.weathermonitoring_set.first.timestamp|date:"D, d M Y H:i" }}</p>
+                    {% else %}
+                      <p>No weather data available.</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">Pest or disease issues</h5>
+                    <ol>
+                      {% for batch in farm.silkworm_batches.all %}
+                        {% for issue in batch.pestordisease_set.all %}
+                          <li>
+                            <h6 class="card-title">{{ batch.name }}({{ issue.issue_type }})</h6>
+                            <div class="card-body">
+                              <p><strong>Description:</strong> {{ issue.description }}</p>
+                              <p><strong>Detected on:</strong> {{ issue.detection_date }}</p>
+                              {% if issue.resolved_date %}
+                                <p><strong>Resolved on:</strong> {{ issue.resolved_date }}</p>
+                              {% else %}
+                                <p><strong>Resolution:</strong> {{ issue.resolution|default:"Not resolved yet" }}</p>
+                              {% endif %}
+                            </div>
+                          </li>
+                        {% empty %}
+                          <li>No pest or disease issues recorded for this batch.</li>
+                        {% endfor %}
+                      {% empty %}
+                        <p>No pest or disease issues recorded for any batch.</p>
+                      {% endfor %}
+                    </ol>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="card shadow mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">IoT Devices deployed</h5>
+                    <ol>
+                    {% for device in farm.iot_devices.all %}
+                    <li>
+                        <div class="card-body">
+                          <h6 class="card-title">{{ device.device_name }} ({{ device.device_type }})</h6>
+                          <p><strong>Status:</strong> 
+                            {% if device.status == 'Active' %}
+                              <span class="badge bg-success">{{ device.status }}</span>
+                            {% else %}
+                              <span class="badge bg-danger">{{ device.status }}</span>
+                            {% endif %}
+                          </p>
+                          <p><strong>Last communication:</strong> 
+                            {% if device.last_communication %}
+                              {{ device.last_communication|date:"D, d M Y H:i" }}          
+                            {% else %}
+                              <span class="text-muted">No communication recorded</span>
+                            {% endif %}
+                          </p>
+                        
+                      </div>
+                    </li>
+                    </ol>
+                    {% empty %}
+                      <p>No IoT devices deployed for this farm.</p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md">
+                <div class="card shadow mb">
+                  <div class="card-body">
+                    <h5 class="card-title text-success">Staff members</h5>
+                    {% if farm.staff_set.exists %}
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Contact</th>
+                            <th>Salary</th>
+                            <th>Date joined</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for staff in farm.staff_set.all %}
+                            <tr>
+                              <td>{{ staff.name }}</td>
+                              <td>{{ staff.role }}</td>
+                              <td>{{ staff.contact_info }}</td>
+                              <td>{{ staff.salary }}</td>
+                              <td>{{ staff.date_joined }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% else %}
+                      <p>No staff assigned to this farm.</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% empty %}
+            <p>No farms available.</p>
+          {% endfor %}
+
+          <br />
+          <a href="{% url 'farm_management' %}" class="btn btn-success">Back to manage Farms</a>
+
+          <!-- Graph -->
+          <div class="container mt-5">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title text-center">Farm analytics</h5>
+                <canvas id="farmGraph"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    
+      const ctx = document.getElementById("farmGraph").getContext("2d");
+      const farmGraph = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["January", "February", "March", "April", "May"], 
+          datasets: [
+            {
+              label: "Production (kg)",
+              data: [12, 19, 3, 5, 2], 
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,282 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feeding schedule | Sericulture Rwanda</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      .card {
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+      }
+      .card:hover {
+        transform: scale(1.03);
+      }
+      .card-title {
+        font-weight: bold;
+        color: #198754;
+      }
+      table th,
+      table td {
+        vertical-align: middle !important;
+      }
+      .dropdown-item:hover {
+        background-color:#0d6efd; 
+        color: white;
+      }
+      canvas {
+        max-height: 300px; 
+    }
+    </style>
+  </head>
+  <body>
+    <div class="d-flex">
+      <!-- Sidebar -->
+      <nav class="bg-dark text-light flex-shrink-0 p-3 sticky-top" style="width: 250px; height: 100vh">
+        <h4 class="text-center text-success">Sericulture Rwanda</h4>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="{% url 'userdashboard' %}" class="nav-link text-light">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'userprofile' %}" class="nav-link text-light">
+              <i class="bi bi-person"></i> User profile
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a 
+              href="{% url 'my_farms' %}" 
+              class="nav-link dropdown-toggle text-light active" 
+              id="farmsDropdown" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false"
+            >
+              <i class="bi bi-house-door"></i> My farms
+            </a>
+            <ul 
+              class="dropdown-menu bg-dark border-0 shadow position-static mt-2" 
+              aria-labelledby="farmsDropdown"
+            >
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'farm_conditions' %}">
+                  <i class="bi bi-thermometer-sun"></i> Farm conditions
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'silkworm_batches' %}">
+                  <i class="bi bi-bug"></i> Silkworm batches
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'track_growth' %}">
+                  <i class="bi bi-graph-up"></i> Growth tracking
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'production' %}">
+                  <i class="bi bi-box-seam"></i> Production
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'pest_and_diseases' %}">
+                  <i class="bi bi-bug"></i> Pests and diseases
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'feeding_schedule' %}">
+                  <i class="bi bi-calendar-check"></i> Feeding schedules
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'device_deployed' %}">
+                  <i class="bi bi-cpu"></i> Devices deployed
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-light" href="{% url 'add_staff' %}">
+                  <i class="bi bi-person-lines-fill"></i> Personnel
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="{% url 'manage_staff' %}" class="nav-link text-light">
+              <i class="bi bi-person-check"></i> Manage staff
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'my_courses' %}" class="nav-link text-light">
+              <i class="bi bi-book"></i> My courses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'user_notifications' %}" class="nav-link text-light">
+              <i class="bi bi-bell"></i> Notifications
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'community_chatroom' %}" class="nav-link text-light">
+              <i class="bi bi-chat-dots"></i> Community
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'reports' %}" class="nav-link text-light">
+              <i class="bi bi-file-earmark-pdf"></i> Reports
+            </a>
+          </li>
+        </ul>
+        <hr />
+        <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger w-100">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="container mt-4">
+        <h2 class="text-success text-center">Feeding schedule</h2>
+        <p class="text-center">
+          View and track feeding schedules for your silkworm batches.
+        </p>
+
+        <!-- Feeding schedule table -->
+        <h4 class="mt-4">Feeding schedules</h4>
+        <table class="table table-bordered table-striped">
+          <thead class="table-success">
+            <tr>
+              <th>Batch name</th>
+              <th>Feed date</th>
+              <th>Feed time</th>
+              <th>Feed quantity (Kgs)</th>
+              <th>Feed type</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for schedule in feeding_schedules %}
+            <tr>
+              <td>{{ schedule.silkworm_batch.batch_name }}</td>
+              <td>{{ schedule.feed_date }}</td>
+              <td>{{ schedule.feed_time }}</td>
+              <td>{{ schedule.feed_quantity }}</td>
+              <td>{{ schedule.feed_type }}</td>
+              <td>{{ schedule.remarks|default:"No remarks" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No feeding schedules found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- Graphs -->
+        <div class="row mt-4">
+          
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Feed quantity analysis</h5>
+                <canvas id="feedQuantityChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Feed types distribution</h5>
+                <canvas id="feedTypeChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <script>
+      const feedQuantityData = {
+        labels: [{% for schedule in feeding_schedules %}'{{ schedule.silkworm_batch.batch_name }}',{% endfor %}],
+        datasets: [
+          {
+            label: "Feed Quantity (grams)",
+            data: [{% for schedule in feeding_schedules %}{{ schedule.feed_quantity }},{% endfor %}],
+            backgroundColor: "rgba(75, 192, 192, 0.6)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+          },
+        ],
+      };
+      const feedTypeLabels = [];
+      const feedTypeCounts = {};
+
+      {% for schedule in feeding_schedules %}
+      if (!feedTypeLabels.includes('{{ schedule.feed_type }}')) {
+        feedTypeLabels.push('{{ schedule.feed_type }}');
+        feedTypeCounts['{{ schedule.feed_type }}'] = 1;
+      } else {
+        feedTypeCounts['{{ schedule.feed_type }}'] += 1;
+      }
+      {% endfor %}
+
+      const feedTypeData = {
+        labels: Object.keys(feedTypeCounts),
+        datasets: [
+          {
+            label: "Feed Types",
+            data: Object.values(feedTypeCounts),
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.6)",
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(255, 206, 86, 0.6)",
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const quantityCtx = document.getElementById("feedQuantityChart").getContext("2d");
+      new Chart(quantityCtx, {
+        type: "bar",
+        data: feedQuantityData,
+        options: {
+          scales: {
+            x: { title: { display: true, text: "Batch Name" } },
+            y: { title: { display: true, text: "Feed Quantity (grams)" } },
+          },
+        },
+      });
+
+      const typeCtx = document.getElementById("feedTypeChart").getContext("2d");
+      new Chart(typeCtx, {
+        type: "pie",
+        data: feedTypeData,
+      });
+    </script>
+  </body>
+</html>

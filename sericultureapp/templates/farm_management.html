@@ -1,0 +1,294 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Manage farms</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+  </head>
+  <body>
+    <div class="d-flex">
+      <nav
+        class="bg-dark text-light flex-shrink-0 p-3 sticky-top"
+        style="width: 250px; height: 100vh"
+      >
+        <h4 class="text-center text-success">Sericulture Rwanda</h4>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a
+              href="{% url 'admindashboard' %}"
+              class="nav-link text-light"
+            >
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'user_management' %}" class="nav-link text-light">
+              <i class="bi bi-people"></i> Manage users
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'farm_management' %}" class="nav-link text-light active">
+              <i class="bi bi-house-door"></i> Manage farms
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'content_management' %}"
+              class="nav-link text-light"
+            >
+              <i class="bi bi-book"></i> Courses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'feedback' %}" class="nav-link text-light">
+              <i class="bi bi-chat-dots"></i> Feedback
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_notifications' %}" class="nav-link text-light">
+              <i class="bi bi-bell"></i> Notifications
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'analytics' %}" class="nav-link text-light">
+              <i class="bi bi-graph-up"></i> Analytics
+            </a>
+          </li>
+        </ul>
+        <hr />
+        <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger w-100">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
+      </nav>
+
+      <!-- Main content -->
+      <div class="main-content flex-grow-1 p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Manage farms</h2>
+          <button
+            class="btn btn-success"
+            data-bs-toggle="modal"
+            data-bs-target="#addFarmModal"
+          >
+            <i class="bi bi-plus-circle"></i> Add new farm
+          </button>
+        </div>
+
+        <div
+          id="alertBox"
+          class="alert alert-success d-none mt-3"
+          role="alert"
+        ></div>
+
+        <div class="mt-3">
+          <input
+            type="text"
+            id="farmSearch"
+            class="form-control"
+            placeholder="Search farms..."
+          />
+        </div>
+
+        <!-- Farm table -->
+        <div class="table-responsive mt-4">
+          <table class="table table-bordered table-striped">
+            <thead class="table-success">
+              <tr>
+                <th>#</th>
+                <th>Farm name</th>
+                <th>Location</th>
+                <th>Owner</th>
+                <th>Size (Hectares)</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for farm in farms %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ farm.name }}</td>
+                <td>{{ farm.location }}</td>
+                <td>{{ farm.owner.username }}</td>
+                <td>{{ farm.size }}</td>
+                <td>
+                  {% if farm.description %} {{ farm.description }} {% else %}
+                  <span class="text-muted">No description provided</span>
+                  {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'farm_details' %}" class="btn btn-sm btn-warning">
+                      <i class="bi bi-pencil"></i> View details
+                    </a>
+                    <a href="" class="btn btn-sm btn-danger">
+                      <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7" class="text-center">No farms available</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <button class="btn btn-danger mt-3" id="bulkDeleteBtn" disabled>
+          Delete selected
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="addFarmModal"
+      tabindex="-1"
+      aria-labelledby="addFarmModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addFarmModalLabel">Add new farm</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="{% url 'add_farm' %}">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="farmName" class="form-label">Farm name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="farmName"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="farmLocation" class="form-label">Location</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="farmLocation"
+                  name="location"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="farmOwner" class="form-label">Owner</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="farmOwner"
+                  name="owner"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="farmSize" class="form-label">Size (Acres)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="farmSize"
+                  name="size"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-success">Add farm</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit farm modal -->
+    <div
+      class="modal fade"
+      id="editFarmModal"
+      tabindex="-1"
+      aria-labelledby="editFarmModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editFarmModalLabel">Edit farm</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="editFarmName" class="form-label">Farm name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editFarmName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editFarmLocation" class="form-label"
+                  >Location</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editFarmLocation"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editFarmOwner" class="form-label">Owner</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editFarmOwner"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editFarmSize" class="form-label"
+                  >Size (Acres)</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="editFarmSize"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-warning">
+                Save changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+  </body>
+</html>

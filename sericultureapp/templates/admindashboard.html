@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin dashboard | Sericulture Rwanda</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+  </head>
+  <body>
+    
+    <div class="d-flex">
+      <nav
+        class="bg-dark text-light flex-shrink-0 p-3 sticky-top"
+        style="width: 250px; height: 100vh"
+      >
+        <h4 class="text-center text-success">Sericulture Rwanda</h4>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a
+              href="{% url 'admindashboard' %}"
+              class="nav-link text-light active"
+            >
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'user_management' %}" class="nav-link text-light">
+              <i class="bi bi-people"></i> Manage users
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'farm_management' %}" class="nav-link text-light">
+              <i class="bi bi-house-door"></i> Manage farms
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'content_management' %}"
+              class="nav-link text-light"
+            >
+              <i class="bi bi-book"></i> Courses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'feedback' %}" class="nav-link text-light">
+              <i class="bi bi-chat-dots"></i> Feedback
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_notifications' %}" class="nav-link text-light">
+              <i class="bi bi-bell"></i> Notifications
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'analytics' %}" class="nav-link text-light">
+              <i class="bi bi-graph-up"></i> Analytics
+            </a>
+          </li>
+        </ul>
+        <hr />
+        <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger w-100">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="flex-grow-1 p-4">
+        <h2 class="text-success">Welcome, {{ user.username }}!</h2>
+        <div class="row">
+  
+          <div class="col-md-3">
+            <div class="card bg-success text-light text-center p-3">
+              <i class="bi bi-people fs-1"></i>
+              <h5>{{ user_count }} Users</h5>
+              <p>Manage all platform users</p>
+              <a href="{% url 'user_management' %}" class="btn btn-light">
+                View
+              </a>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-info text-light text-center p-3">
+              <i class="bi bi-house-door fs-1"></i>
+              <h5>{{ farm_count }} Farms</h5>
+              <p>Track and manage farms</p>
+              <a href="{% url 'farm_management' %}" class="btn btn-light">
+                View
+              </a>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-warning text-dark text-center p-3">
+              <i class="bi bi-book fs-1"></i>
+              <h5>{{ course_count }} Courses</h5>
+              <p>Manage learning content</p>
+              <a href="{% url 'content_management' %}" class="btn btn-dark">
+                View
+              </a>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-danger text-light text-center p-3">
+              <i class="bi bi-chat-dots fs-1"></i>
+              <h5>{{ feedback_count }} Feedback</h5>
+              <p>View user feedback</p>
+              <a href="{% url 'feedback' %}" class="btn btn-light">View</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <h3>Platform statistics</h3>
+          <canvas id="analyticsChart" style="max-height: 400px"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const data = JSON.parse(
+          document.getElementById("analytics-data").textContent
+        );
+        const userCount = data.user_count;
+        const farmCount = data.farm_count;
+        const courseCount = data.course_count;
+        const feedbackCount = data.feedback_count;
+        console.log("User Count:", userCount);
+        console.log("Farm Count:", farmCount);
+        console.log("Course Count:", courseCount);
+        console.log("Feedback Count:", feedbackCount);
+        const ctx = document.getElementById("analyticsChart").getContext("2d");
+        const analyticsChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Users", "Farms", "Courses", "Feedback"],
+            datasets: [
+              {
+                label: "Number",
+                data: [userCount, farmCount, courseCount, feedbackCount],
+                backgroundColor: ["#28a745", "#17a2b8", "#ffc107", "#dc3545"],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+          },
+        });
+      });
+    </script>
+    <script type="application/json" id="analytics-data">
+      {
+        "user_count": {{ user_count|default:"0" }},
+        "farm_count": {{ farm_count|default:"0" }},
+        "course_count": {{ course_count|default:"0" }},
+        "feedback_count": {{ feedback_count|default:"0" }}
+      }
+    </script>
+  </body>
+</html>

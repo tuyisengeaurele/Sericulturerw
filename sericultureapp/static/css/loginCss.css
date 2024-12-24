@@ -1,0 +1,138 @@
+body {
+    background-color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.login-container {
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay;
+    background-color: #fff;
+}
+
+.card {
+    width: 100%;
+    max-width: 400px;
+    border: none;
+}
+
+.card h2 {
+    font-weight: bold;
+    color: #28a745;
+}
+
+.card .form-label {
+    font-weight: bold;
+    color: #444;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+
+.card a {
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.card a:hover {
+    color: #1d7a3c;
+}
+
+
+.form-control {
+    border: 1px solid #ddd;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+}
+
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+.form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.nav-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.nav-arrow {
+    cursor: pointer;
+    font-size: 1.25rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.view-all-btn {
+    margin-top: 1rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+}
+.view-all-btn:hover {
+    background-color: #218838;
+}
+
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2d3e50;
+}
+
+.navbar .navbar-nav .nav-link {
+    font-size: 1.1rem;
+    color: #fff;
+    padding: 10px 15px;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #218838; 
+}
+
+.navbar-toggler-icon {
+    background-color: #218838;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color: #218838;
+    font-weight: bold;
+}
+
+.navbar .form-control {
+    max-width: 200px;
+}
+
+#loginButton {
+    font-size: 1rem;
+    color: #ffffff;
+    border-radius: 25px;
+}
+
+@media (max-width: 991px) {
+    .navbar .navbar-collapse {
+        text-align: center;
+    }
+}

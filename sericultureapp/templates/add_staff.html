@@ -1,0 +1,267 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add staff | Sericulture Rwanda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <style>
+        .form-container {
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .form-title {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .table-container {
+            margin-top: 30px;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .btn-custom {
+            background-color: #198754;
+            color: white;
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+
+        .btn-custom:hover {
+            background-color: #155d40;
+        }
+
+        .card-header {
+            background-color: #198754;
+            color: white;
+            text-align: center;
+        }
+
+        .table th,
+        .table td {
+            text-align: center;
+        }
+
+        .table-container {
+            margin-bottom: 50px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-group input {
+            border-radius: 5px;
+        }
+        .dropdown-item:hover {
+            background-color:#0d6efd;
+            color: white; 
+          }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex">
+      
+        <nav class="bg-dark text-light flex-shrink-0 p-3 sticky-top" style="width: 250px; height: 100vh">
+            <h4 class="text-center text-success">Sericulture Rwanda</h4>
+            <hr />
+            <ul class="nav nav-pills flex-column mb-auto">
+              <li class="nav-item">
+                <a href="{% url 'userdashboard' %}" class="nav-link text-light">
+                  <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'userprofile' %}" class="nav-link text-light">
+                  <i class="bi bi-person"></i> User profile
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a 
+                  href="{% url 'my_farms' %}" 
+                  class="nav-link dropdown-toggle text-light active" 
+                  id="farmsDropdown" 
+                  data-bs-toggle="dropdown" 
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-house-door"></i> My farms
+                </a>
+                <ul 
+                  class="dropdown-menu bg-dark border-0 shadow position-static mt-2" 
+                  aria-labelledby="farmsDropdown"
+                >
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'farm_conditions' %}">
+                      <i class="bi bi-thermometer-sun"></i> Farm conditions
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'silkworm_batches' %}">
+                      <i class="bi bi-bug"></i> Silkworm batches
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'track_growth' %}">
+                      <i class="bi bi-graph-up"></i> Growth tracking
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'production' %}">
+                      <i class="bi bi-box-seam"></i> Production
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'pest_and_diseases' %}">
+                      <i class="bi bi-bug"></i> Pests and diseases
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'feeding_schedule' %}">
+                      <i class="bi bi-calendar-check"></i> Feeding schedules
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'device_deployed' %}">
+                      <i class="bi bi-cpu"></i> Devices deployed
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-light" href="{% url 'add_staff' %}">
+                      <i class="bi bi-person-lines-fill"></i> Personnel
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li>
+                <a href="{% url 'manage_staff' %}" class="nav-link text-light">
+                  <i class="bi bi-person-check"></i> Manage staff
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'my_courses' %}" class="nav-link text-light">
+                  <i class="bi bi-book"></i> My courses
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'user_notifications' %}" class="nav-link text-light">
+                  <i class="bi bi-bell"></i> Notifications
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'community_chatroom' %}" class="nav-link text-light">
+                  <i class="bi bi-chat-dots"></i> Community
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'reports' %}" class="nav-link text-light">
+                  <i class="bi bi-file-earmark-pdf"></i> Reports
+                </a>
+              </li>
+            </ul>
+            <hr />
+            <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger w-100">
+                <i class="bi bi-box-arrow-right"></i> Logout
+              </button>
+            </form>
+          </nav>
+
+        <!-- Main Content -->
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+               
+                <div class="col-md-8 form-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="text-center">Add new staff</h4>
+                        </div>
+                        <div class="card-body">
+                       
+                            {% if messages %}
+                                <div class="alert alert-success">
+                                    {% for message in messages %}
+                                        <p>{{ message }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <!-- Form to add staff -->
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="form-group mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" name="name" class="form-control" value="{{ form.name.value }}">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    <input type="text" name="role" class="form-control" value="{{ form.role.value }}">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="contact_info" class="form-label">Contact Information</label>
+                                    <input type="text" name="contact_info" class="form-control" value="{{ form.contact_info.value }}">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="salary" class="form-label">Salary</label>
+                                    <input type="text" name="salary" class="form-control" value="{{ form.salary.value }}">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="date_joined" class="form-label">Date Joined</label>
+                                    <input type="date" name="date_joined" class="form-control" value="{{ form.date_joined.value }}">
+                                </div>
+
+                                <button type="submit" class="btn btn-custom">Add Staff</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing staff table -->
+                <div class="col-md-12 table-container">
+                    <h4 class="text-center">Existing staff</h4>
+                    <table class="table table-bordered table-striped mt-4">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Contact information</th>
+                                <th>Salary</th>
+                                <th>Date joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in staff_list %}
+                            <tr>
+                                <td>{{ staff.name }}</td>
+                                <td>{{ staff.role }}</td>
+                                <td>{{ staff.contact_info }}</td>
+                                <td>{{ staff.salary }}</td>
+                                <td>{{ staff.date_joined }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No staff available for this farm.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+</body>
+
+</html>

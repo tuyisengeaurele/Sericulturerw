@@ -1,0 +1,209 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reports | Sericulture Rwanda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <style>
+      .card {
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+      }
+      .card:hover {
+        transform: scale(1.03);
+      }
+      .chart-container {
+        position: relative;
+        margin: 20px auto;
+        height: 400px;
+        width: 100%;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #198754;
+        color: white;
+      }
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="d-flex">
+      <!-- Sidebar -->
+      <nav
+        class="bg-dark text-light flex-shrink-0 p-3 sticky-top"
+        style="width: 250px; height: 100vh"
+      >
+        <h4 class="text-center text-success">Sericulture Rwanda</h4>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a
+              href="{% url 'admindashboard' %}"
+              class="nav-link text-light"
+            >
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'user_management' %}" class="nav-link text-light">
+              <i class="bi bi-people"></i> Manage users
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'farm_management' %}" class="nav-link text-light">
+              <i class="bi bi-house-door"></i> Manage farms
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'content_management' %}"
+              class="nav-link text-light"
+            >
+              <i class="bi bi-book"></i> Courses
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'feedback' %}" class="nav-link text-light">
+              <i class="bi bi-chat-dots"></i> Feedback
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_notifications' %}" class="nav-link text-light">
+              <i class="bi bi-bell"></i> Notifications
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'analytics' %}" class="nav-link text-light active">
+              <i class="bi bi-graph-up"></i> Analytics
+            </a>
+          </li>
+        </ul>
+        <hr />
+        <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger w-100">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </form>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="container mt-4">
+        <h2 class="text-success text-center">Reports</h2>
+        <p class="text-center">Overview of farm performance, silkworm growth, and production</p>
+
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <div class="card p-3">
+              <h5 class="text-success">Total production</h5>
+              <p class="h4">{{ total_production }} kg</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card p-3">
+              <h5 class="text-success">Active farms</h5>
+              <p class="h4">{{ active_farms }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card p-3">
+              <h5 class="text-success">Silkworm batches</h5>
+              <p class="h4">{{ silkworm_batches }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Graphs -->
+        <div class="card p-4 mb-4">
+          <h5 class="text-success">Production over time</h5>
+          <div class="chart-container">
+            <canvas id="productionChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card p-4 mb-4">
+          <h5 class="text-success">Silkworm growth statistics</h5>
+          <div class="chart-container">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card p-4">
+          <h5 class="text-success">Detailed reports</h5>
+          <table>
+            <thead>
+              <tr>
+                <th>Farm name</th>
+                <th>Production (kg)</th>
+                <th>Silkworm batches</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for farm in farms %}
+              <tr>
+                <td>{{ farm.name }}</td>
+                <td>{{ farm.production }}</td>
+                <td>{{ farm.batches }}</td>
+                <td>{{ farm.location }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const productionData = {{ production_data|safe }};
+      const growthData = {{ growth_data|safe }};
+
+      // Production chart
+      const productionChart = new Chart(document.getElementById('productionChart'), {
+        type: 'line',
+        data: {
+          labels: productionData.labels,
+          datasets: [{
+            label: 'Production (kg)',
+            data: productionData.values,
+            borderColor: '#198754',
+            backgroundColor: 'rgba(25, 135, 84, 0.1)',
+            fill: true,
+            tension: 0.4,
+          }]
+        }
+      });
+
+      // Growth chart
+      const growthChart = new Chart(document.getElementById('growthChart'), {
+        type: 'bar',
+        data: {
+          labels: growthData.labels,
+          datasets: [{
+            label: 'Growth Rate (%)',
+            data: growthData.values,
+            backgroundColor: '#0d6efd',
+          }]
+        }
+      });
+    </script>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+  </body>
+</html>

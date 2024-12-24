@@ -1,0 +1,207 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pest and diseases management | Sericulture Rwanda</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dropdown-item:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .table th, .table td {
+            text-align: center;
+        }
+        .form-container {
+          background: #ffffff;
+          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+          border-radius: 10px;
+          padding: 2rem;
+          margin: 2rem auto;
+          max-width: 80%%;
+        }
+        .dropdown-item:hover {
+          background-color:#0d6efd; /* A green background */
+          color: white; /* White text */
+        }
+        canvas {
+            max-height: 300px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="bg-dark text-light flex-shrink-0 p-3 sticky-top" style="width: 250px; height: 100vh">
+                <h4 class="text-center text-success">Sericulture Rwanda</h4>
+                <hr />
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="{% url 'userdashboard' %}" class="nav-link text-light">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'userprofile' %}" class="nav-link text-light">
+                            <i class="bi bi-person"></i> User profile
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="{% url 'my_farms' %}" class="nav-link dropdown-toggle text-light active" id="farmsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-house-door"></i> My farms
+                        </a>
+                        <ul class="dropdown-menu bg-dark border-0 shadow position-static mt-2" aria-labelledby="farmsDropdown">
+                            <li><a class="dropdown-item text-light" href="{% url 'farm_conditions' %}"><i class="bi bi-thermometer-sun"></i> Farm conditions</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'silkworm_batches' %}"><i class="bi bi-bug"></i> Silkworm batches</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'track_growth' %}"><i class="bi bi-graph-up"></i> Growth tracking</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'production' %}"><i class="bi bi-box-seam"></i> Production</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'pest_and_diseases' %}"><i class="bi bi-bug"></i> Pests and diseases</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'feeding_schedule' %}"><i class="bi bi-calendar-check"></i> Feeding schedules</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'device_deployed' %}"><i class="bi bi-cpu"></i> Devices deployed</a></li>
+                            <li><a class="dropdown-item text-light" href="{% url 'add_staff' %}"><i class="bi bi-person-lines-fill"></i> Personnel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'manage_staff' %}" class="nav-link text-light"><i class="bi bi-person-check"></i> Manage staff</a></li>
+                    <li><a href="{% url 'my_courses' %}" class="nav-link text-light"><i class="bi bi-book"></i> My courses</a></li>
+                    <li><a href="{% url 'user_notifications' %}" class="nav-link text-light"><i class="bi bi-bell"></i> Notifications</a></li>
+                    <li><a href="{% url 'community_chatroom' %}" class="nav-link text-light"><i class="bi bi-chat-dots"></i> Community</a></li>
+                    <li><a href="{% url 'reports' %}" class="nav-link text-light"><i class="bi bi-file-earmark-pdf"></i> Reports</a></li>
+                </ul>
+                <hr />
+                <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="container mt-5">
+                    <h2 class="text-center text-success">Pest and diseases management</h2>
+                    <hr />
+
+                            <!-- Form for adding a new growth stage -->
+                            {% if messages %}
+                            <div class="alert alert-success" role="alert">
+                              {% for message in messages %}
+                                  <p>{{ message }}</p>
+                              {% endfor %}
+                            </div>
+                          {% endif %}
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-body">
+                                    <h3 class="card-title text-center mb-4">Add new pests and diseases</h3>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                            
+                                        <div class="mb-3">
+                                            <label for="id_silkwormbatch" class="form-label">Silkworm batch</label>
+                                            {{ form.silkwormbatch }}
+                                        </div>
+                            
+                                        <div class="mb-3">
+                                            <label for="id_issue_type" class="form-label">Issue type</label>
+                                            {{ form.issue_type }}
+                                        </div>
+               
+                                        <div class="mb-3">
+                                            <label for="id_description" class="form-label">Description</label>
+                                            {{ form.description }}
+                                        </div>
+                            
+                                        <div class="mb-3">
+                                            <label for="id_detection_date" class="form-label">Detection date</label>
+                                            {{ form.detection_date }}
+                                        </div>
+                            
+                                        <div class="mb-3">
+                                            <label for="id_resolution" class="form-label">Resolution</label>
+                                            {{ form.resolution }}
+                                        </div>
+                            
+                                        <div class="mb-3">
+                                            <label for="id_resolved_date" class="form-label">Resolved date</label>
+                                            {{ form.resolved_date }}
+                                        </div>
+                            
+                                        <button type="submit" class="btn btn-success w-100">Add</button>
+                                    </form>
+                                </div>
+                            </div>
+                    <hr />
+
+                    <!-- Table for displaying pests and diseases -->
+                    <h4 class="text-center mt-4">Detected pests and diseases</h4>
+                    <div class="mt-4">
+                        <table id="pestsTable" class="table table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Silkworm batch</th>
+                                    <th>Issue type</th>
+                                    <th>Description</th>
+                                    <th>Detection date</th>
+                                    <th>Resolution</th>
+                                    <th>Resolved date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for issue in issues %}
+                                <tr>
+                                    <td>{{ issue.silkwormbatch }}</td>
+                                    <td>{{ issue.issue_type }}</td>
+                                    <td>{{ issue.description }}</td>
+                                    <td>{{ issue.detection_date }}</td>
+                                    <td>{{ issue.resolution|default:"Not Resolved" }}</td>
+                                    <td>{{ issue.resolved_date|default:"N/A" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Graph -->
+                    <div class="mt-5">
+                        <h4 class="text-center">Issues breakdown by type</h4>
+                        <canvas id="issueChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#pestsTable').DataTable();
+        });
+
+        // Chart for issue statistics
+        var ctx = document.getElementById('issueChart').getContext('2d');
+        var issueChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: {{ chart_data.labels|safe }},
+                datasets: [{
+                    label: 'Issue Breakdown',
+                    data: {{ chart_data.data|safe }},
+                    backgroundColor: ['#0d6efd', '#ffc107'],
+                    borderColor: ['#ffffff', '#ffffff'],
+                    borderWidth: 1
+                }]
+            }
+        });
+    </script>
+</body>
+
+</html>
